@@ -1,0 +1,24 @@
+{
+  "name": "content-scraper",
+  "version": "1.0.0",
+  "description": "scraping content from a website and creating a csv file with data",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node scraper.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tallerico/Treehouse-FSJS-Project-6.git"
+  },
+  "author": "Mike Tallerico",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tallerico/Treehouse-FSJS-Project-6/issues"
+  },
+  "homepage": "https://github.com/tallerico/Treehouse-FSJS-Project-6#readme",
+  "dependencies": {
+    "json2csv": "^4.1.5",
+    "scrape-it": "^5.0.5"
+  }
+}
