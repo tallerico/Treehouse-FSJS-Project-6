@@ -9,7 +9,6 @@ const opts = { fields };
 const today = new Date();
 const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
 
-
 function scrapePages(pageURL) {
     scrapeIt(`${pageURL}`, {
         title:{
@@ -34,8 +33,6 @@ function scrapePages(pageURL) {
     })
 }
 
-// scrapePages('http://shirts4mike.com/shirt.php?id=102');
-
 scrapeIt('http://shirts4mike.com/shirts.php', {
     tshirts: {
         listItem: ".products li"
@@ -46,11 +43,11 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
                 , attr: "href"
               }
           }
-      }
-    
+      } 
+},(err) => {
+    console.log(err);
 }).then(({ data, response }) => {
     const myData = data.tshirts;
-
     for (let tshirt of myData) {
         // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
@@ -69,7 +66,6 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     }, 3000);
     // console.log(`Status Code: ${response.statusCode}`);
 })
-
 
 
  
