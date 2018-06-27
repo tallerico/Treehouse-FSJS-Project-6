@@ -7,6 +7,10 @@ let myShirts = [];
 const opts = { fields };
 const today = new Date();
 
+if (!fs.existsSync('./data')) {
+    fs.mkdirSync('./data');
+}
+
 function Tshirt(title,price, imgURL, url, curTime) {
     this.title = title;
     this.price = title;
@@ -55,6 +59,7 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     
 }).then(({ data, response }) => {
     const myData = data.tshirts;
+    
     for (let tshirt of myData) {
         // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
