@@ -68,8 +68,10 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     setTimeout(() => {
         const json2csvParser = new Json2csvParser({ fields });
         const csv = json2csvParser.parse(myShirts);
-        fs.writeFile(`${today}.csv`,csv, (err) =>{
-            console.log(err);
+        fs.writeFile(`./data/${today.getFullYear()}-${today.getMonth()}-${today.getDay()}.csv`,csv, (err) =>{
+            if(err != null) {
+                console.log('There has been an error');
+            }
         });
     }, 5000);
     // console.log(`Status Code: ${response.statusCode}`);
