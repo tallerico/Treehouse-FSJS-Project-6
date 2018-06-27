@@ -6,18 +6,10 @@ let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
 let myShirts = [];
 const opts = { fields };
 const today = new Date();
+const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+console.log(today.getDay());
 
-if (!fs.existsSync('./data')) {
-    fs.mkdirSync('./data');
-}
 
-function Tshirt(title,price, imgURL, url, curTime) {
-    this.title = title;
-    this.price = title;
-    this.imgURL = title;
-    this.title = title;
-    this.title = title;
-}
 
 function scrapePages(pageURL) {
     scrapeIt(`${pageURL}`, {
@@ -65,15 +57,19 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
     }
 
+    if (!fs.existsSync('./data')) {
+        fs.mkdirSync('./data');
+    }
+
     setTimeout(() => {
         const json2csvParser = new Json2csvParser({ fields });
         const csv = json2csvParser.parse(myShirts);
-        fs.writeFile(`./data/${today.getFullYear()}-${today.getMonth()}-${today.getDay()}.csv`,csv, (err) =>{
+        fs.writeFile(`./data/${ymd}.csv`,csv, (err) =>{
             if(err != null) {
                 console.log('There has been an error');
             }
         });
-    }, 5000);
+    }, 2000);
     // console.log(`Status Code: ${response.statusCode}`);
 })
 
