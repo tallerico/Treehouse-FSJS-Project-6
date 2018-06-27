@@ -2,7 +2,7 @@ const scrapeIt = require('scrape-it');
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 const folderExist = fs.existsSync('./data');
-let fields = [];
+let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
 let myShirts = [];
 const opts = { fields };
 const today = new Date();
@@ -35,7 +35,7 @@ function scrapePages(pageURL) {
         const obj = {
             Title: data.title,
             Price: data.price,
-            ImageUrl: data.imageURL,
+            ImageURL: data.imageURL,
             URL: pageURL,
             Time: `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`
         }
@@ -64,10 +64,17 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
         // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
     }
-    
-    console.log(`Status Code: ${response.statusCode}`);
+
+    setTimeout(() => {
+        const json2csvParser = new Json2csvParser({ fields });
+        const csv = json2csvParser.parse(myShirts);
+        fs.writeFile(`${today}.csv`,csv, (err) =>{
+            console.log(err);
+        });
+    }, 5000);
+    // console.log(`Status Code: ${response.statusCode}`);
 })
 
-setTimeout(() => console.log(myShirts), 5000);
+
 
  
