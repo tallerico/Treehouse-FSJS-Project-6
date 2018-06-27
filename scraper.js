@@ -1,5 +1,6 @@
 const scrapeIt = require('scrape-it');
 const Json2csvParser = require('json2csv').Parser;
+const http = require('http');
 const fs = require('fs');
 const folderExist = fs.existsSync('./data');
 let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
@@ -7,8 +8,6 @@ let myShirts = [];
 const opts = { fields };
 const today = new Date();
 const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
-console.log(today.getDay());
-
 
 
 function scrapePages(pageURL) {
@@ -51,16 +50,14 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     
 }).then(({ data, response }) => {
     const myData = data.tshirts;
-    
+
     for (let tshirt of myData) {
         // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
     }
-
     if (!fs.existsSync('./data')) {
         fs.mkdirSync('./data');
     }
-
     setTimeout(() => {
         const json2csvParser = new Json2csvParser({ fields });
         const csv = json2csvParser.parse(myShirts);
@@ -69,7 +66,7 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
                 console.log('There has been an error');
             }
         });
-    }, 2000);
+    }, 3000);
     // console.log(`Status Code: ${response.statusCode}`);
 })
 
