@@ -10,7 +10,7 @@ const today = new Date();
 const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
 
 // creates log file and adds logs to file each time a error is thrown
-const logError = (error) => {
+function logError(error) {
     fs.appendFile('./scraper-error.log',`${today} ${error}` + '\n', function (err) {
         if (err) throw err;
     });
@@ -30,6 +30,7 @@ function scrapePages(pageURL) {
             }
         }
     ).then(({data,response}) => {
+        //creating an object with the nameing convention so the csv file converter will work
         const obj = {
             Title: data.title,
             Price: data.price,
@@ -40,7 +41,7 @@ function scrapePages(pageURL) {
         myShirts.push(obj);
     })
 }
-
+//initial scraping of data that produces all the of the links for the tshirt pages
 scrapeIt('http://shirts4mike.com/shirts.php', {
     tshirts: {
         listItem: ".products li"
@@ -52,15 +53,10 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
               }
           }
       } 
-},(err) => {
-    if(err.code === 'EAI_AGAIN') {
-        logError('Website is currently unavailiable.');
-    }
 }).then(({ data, response }) => {
     const myData = data.tshirts;
     //looping through all pages and scraping each for data
     for (let tshirt of myData) {
-        // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
     }
     if (!fs.existsSync('./data')) {
@@ -69,18 +65,16 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     // letting data populate before creating csv
     setTimeout(() => {
         const json2csvParser = new Json2csvParser({ fields });
-        const csv = json2csvParser.parse(myShirts).on('error', err => {
-            logError('Failed to create csv file.')
-        });
+        const csv = json2csvParser.parse(myShirts);
         fs.writeFile(`./data/${ymd}.csv`,csv, (err) =>{
             if(err != null) {
-                console.log('There has been an error');
+                console.log('File not created.');
             }
         });
-    }, 3000);
-    // console.log(`Status Code: ${response.statusCode}`);
+    }, 5000);
 }).catch(function(error) {
-    console.log('Failed to create csv file please check error log')
+    logError('Website is currently unavailiable.');
+    console.log('Please check log for error details.');
 });
 
 
