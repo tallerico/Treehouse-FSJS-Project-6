@@ -71,7 +71,7 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
                 console.log('File not created.');
             }
         });
-    }, 5000);
+    }, 3000);
 }).catch(function(error) {
     logError('Website is currently unavailiable.');
     console.log('Please check log for error details.');
