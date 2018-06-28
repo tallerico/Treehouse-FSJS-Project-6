@@ -16,6 +16,7 @@ const logError = (error) => {
     });
 }
 
+//function for scraping page of data
 function scrapePages(pageURL) {
     scrapeIt(`${pageURL}`, {
         title:{
@@ -52,9 +53,12 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
           }
       } 
 },(err) => {
-    console.log(err);
+    if(err.code === 'EAI_AGAIN') {
+        logError('Website is currently unavailiable.');
+    }
 }).then(({ data, response }) => {
     const myData = data.tshirts;
+    //looping through all pages and scraping each for data
     for (let tshirt of myData) {
         // console.log(tshirt.url);
         scrapePages(`http://shirts4mike.com/${tshirt.url}`);
@@ -62,9 +66,12 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
     if (!fs.existsSync('./data')) {
         fs.mkdirSync('./data');
     }
+    // letting data populate before creating csv
     setTimeout(() => {
         const json2csvParser = new Json2csvParser({ fields });
-        const csv = json2csvParser.parse(myShirts);
+        const csv = json2csvParser.parse(myShirts).on('error', err => {
+            logError('Failed to create csv file.')
+        });
         fs.writeFile(`./data/${ymd}.csv`,csv, (err) =>{
             if(err != null) {
                 console.log('There has been an error');
@@ -72,7 +79,9 @@ scrapeIt('http://shirts4mike.com/shirts.php', {
         });
     }, 3000);
     // console.log(`Status Code: ${response.statusCode}`);
-})
+}).catch(function(error) {
+    console.log('Failed to create csv file please check error log')
+});
 
 
  
