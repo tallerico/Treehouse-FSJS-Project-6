@@ -9,6 +9,13 @@ const opts = { fields };
 const today = new Date();
 const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
 
+// creates log file and adds logs to file each time a error is thrown
+const logError = (error) => {
+    fs.appendFile('./scraper-error.log',`${today} ${error}` + '\n', function (err) {
+        if (err) throw err;
+    });
+}
+
 function scrapePages(pageURL) {
     scrapeIt(`${pageURL}`, {
         title:{
